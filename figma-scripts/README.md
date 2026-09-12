@@ -498,6 +498,23 @@ The footer (`69:336`) is full-bleed `Ink`, 1440x656, in three bands:
 
 It is a component, instanced on all five page frames.
 
+## No invented customers
+
+Fabricated social proof has been stripped out: the Demo request testimonial and
+its attributed job title, the four wordmarks under it, and the six wordmarks in
+the Platform — Overview logo strip. That strip is now six dashed `Logo slot`
+placeholders under a neutral `Customer logos` label — the layout slot survives
+for real logo assets without the page claiming customers that do not exist.
+
+Three references to invented companies remain **on purpose**, and are not logo
+or endorsement slots:
+
+| Where | Text | Why it stays |
+|---|---|---|
+| App — Dashboard Home, `Card / Activity` | "took a call from Halcyon" | sample data inside a product screen, same as the fake phone numbers |
+| Platform — AI, `Quote card` | attributed testimonial | still a fabricated endorsement — **remove or replace before this goes near a real audience** |
+| Resources — Blog, post 4 | "Meridian Health answers 3,400 calls a night" | placeholder editorial headline, reads as a fake case study |
+
 ## Nested pages (rows 4 and 5)
 
 Nine pages, one per nav entry that used to point at a shell. Each was given a
@@ -509,7 +526,7 @@ the same thing for all the pages" — while staying inside the same tokens, the
 
 | Page | Node | x | Size | Stack |
 |---|---|---|---|---|
-| Platform — Overview | `177:1145` | -3761 | 1440x4160 | split hero w/ card collage · ink stat band · three-layer diagram · 3 alternating zig-zag rows · logo strip |
+| Platform — Overview | `177:1145` | -3761 | 1440x4160 | split hero w/ card collage · ink stat band · three-layer diagram · 3 alternating zig-zag rows · empty logo strip |
 | Platform — AI | `180:1264` | -2241 | 1440x3620 | full-bleed ink hero w/ glow · 3 capability cards · 5-node call timeline · guardrails split w/ dark config panel · quote card |
 | Platform — Privacy | `182:1383` | -721 | 1440x3660 | compact hero w/ 4 compliance badges · two-column long-form + contents rail · 12-region residency grid · subprocessor table |
 | Platform — Developers | `184:1502` | 799 | 1440x3440 | hero w/ terminal panel · ink quickstart strip · 6 SDK cards · 3 build-idea cards · community band |
@@ -536,7 +553,7 @@ hero-first, which is why it does not carry a closing CTA.
 | y | Section |
 |---|---|
 | 0 | Navigation (last child) |
-| 164 | `Hero / Demo form` — left value column (4 ticked benefits, logo row), right 560px white form card |
+| 164 | `Hero / Demo form` — left value column (4 ticked benefits), right 560px white form card |
 | 1064 | What happens next — 3 numbered steps |
 | 1444 | Trust band — 4 facts |
 | 1704 | Footer |
