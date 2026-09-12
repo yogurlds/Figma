@@ -36,14 +36,14 @@ placeholders.
 
 ## Header variants and navigation
 
-The header is a variant set (`89:635`, named `Header`) with a single `State` property:
+The header is a variant set (`101:749`, named `Header`) with a single `State` property:
 
 | Variant | Node | Dropdown |
 |---|---|---|
 | State=Default | `11:2` | none |
-| State=Product | `74:635` | Business Phone · Contact Center Solution |
-| State=Platform | `74:673` | Support · Privacy · Integration · Developers · API's · Overview · AI |
-| State=Resources | `74:711` | Documentation · Blog · Agentic · InboundCX University |
+| State=Product | `101:635` | Business Phone · Contact Center Solution |
+| State=Platform | `101:673` | Support · Privacy · Integration · Developers · API's · Overview · AI |
+| State=Resources | `101:711` | Documentation · Blog · Agentic · InboundCX University |
 
 Nav labels match the four page frames: Product, Platform, Resources, Pricing.
 
@@ -67,17 +67,55 @@ Keep the set name slash-free, and after any structural change **verify in a
 separate call** that the set still exists and the reactions are still attached —
 they read back fine immediately after being written, then disappear.
 
-Prototype wiring (16 reactions, On Click):
+### Full interaction map (41 reactions, all On Click)
 
-- Product / Platform / Resources -> Change To that variant, Smart Animate 200ms
-- Clicking the already-open item -> Change To Default (closes it)
-- Pricing -> Navigate to the Pricing frame `70:714`, Dissolve 150ms
+Per variant (7 x 4 = 28):
+
+| Element | Action |
+|---|---|
+| Product / Platform / Resources | Change To that variant, Smart Animate 200ms |
+| The already-open item | Change To Default (closes the menu) |
+| Pricing | Navigate -> Pricing `70:714`, Dissolve 150ms |
+| Logo | Navigate -> Landing `1:1413` |
+| Try free (`Button / Secondary`) | Navigate -> Pricing `70:714` |
+| Request a demo (`Button / Primary`) | Navigate -> Pricing `70:714` |
+
+Dropdown entries (13), each navigating to its own menu's page: Product panel
+(2) -> Product `70:312`, Platform panel (7) -> Platform `70:446`, Resources
+panel (4) -> Resources `70:580`.
+
+### Overlays are not an option — do not retry
+
+Prototype overlays would be immune to the dissolution problem below, but
+`overlayPositionType`, `overlayBackground` and `overlayBackgroundInteraction`
+are all **read-only on `FrameNode`** in the plugin API. An overlay-based nav
+cannot be wired end to end from a script; it needs three switches set by hand
+in the Prototype panel per overlay frame.
+
+### If the dropdowns stop working again
+
+Symptom: Pricing still navigates but Product / Platform / Resources do nothing.
+Cause: the component set dissolved (a variant was dragged out of the purple
+dashed container), which invalidates every `CHANGE_TO` destination and makes
+Figma delete those reactions silently. `NAVIGATE` reactions survive because they
+target frames. Recovery, as one scripted pass:
+
+1. Rename the four loose components to `State=Default` / `Product` / `Platform`
+   / `Resources` (strip any `Header/` prefix Figma added).
+2. `figma.combineAsVariants([...], figma.currentPage)`; name the set `Header`
+   with **no `/`** in the name.
+3. Re-apply the 41 reactions above.
+4. Verify in a **separate tool call** — reactions read back as correct
+   immediately after writing even when they have not persisted.
+
+Never set `layoutMode`, `resize()` or reposition individual variants on the set;
+move the whole set with `set.x` / `set.y` instead.
 
 ## Components
 
 | Component | Node | Size |
 |---|---|---|
-| Header (variant set) | `89:635` | 1440x164 per variant |
+| Header (variant set) | `101:749` | 1440x164 per variant |
 | Footer | `69:336` | 1440x656 |
 | Stage 1-6 carousel cards | `17:204`, `17:222`, `17:235`, `18:204`, `18:221`, `18:234` | 440x171 |
 
