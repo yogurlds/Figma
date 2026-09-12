@@ -2,6 +2,28 @@
 
 Figma file: `RRfHYjJ1gZDmk7uxDzikwO` (Ringfully) · page `0:1`
 
+## Frames on the canvas
+
+| Frame | x | Size |
+|---|---|---|
+| Landing page `1:1413` | -3761 | 1440x3811 |
+| Product `70:312` | -2241 | 1440x1753 |
+| Platform `70:446` | -721 | 1440x1812 |
+| Resources `70:580` | 799 | 1440x1753 |
+| Pricing `70:714` | 2319 | 1440x1727 |
+
+The original Article, Shop, Product detail page and About frames were deleted.
+The four replacement pages are shells: header instance, page hero (title,
+subhead, Request a Quote), a dashed content placeholder, and footer instance.
+
+## Components
+
+| Component | Node | Size |
+|---|---|---|
+| Navigation / Header | `11:2` | 1440x164 |
+| Footer | `69:336` | 1440x656 |
+| Stage 1-6 carousel cards | `17:204`, `17:222`, `17:235`, `18:204`, `18:221`, `18:234` | 440x171 |
+
 ## Tokens
 
 | Token | Value | Used for |
@@ -19,7 +41,7 @@ Content width for section bodies: **1034px**, centred.
 Sections carry 84px internal padding top and bottom, so butting them together
 yields 168px between content blocks.
 
-## Landing page (`1:1413`, 1440x3663) vertical stack
+## Landing page (`1:1413`, 1440x3811) vertical stack
 
 | y | Section | Node |
 |---|---|---|
@@ -29,7 +51,7 @@ yields 168px between content blocks.
 | 1043 | How it works: heading, subhead, pill, 3 feature cards | `30:230` |
 | 1618 | Use cases: heading, pill, video stack, 4 tabs | `47:230` |
 | 2675 | Closing CTA: gradient banner card, white pill button | `58:230` |
-| 3155 | Footer: 5 link columns, divider, bottom bar | `59:230` |
+| 3155 | Footer (component instance) | `69:337` — master `69:336` |
 
 The original template sections below the Use cases section are **hidden, not
 deleted** (`1:1513`, `1:1526`, `1:1527`, `1:1537`, `1:1514`, `1:1515`, `1:1417`,
@@ -94,12 +116,17 @@ The CTA card is 1280x300, radius 24, filled with a three-stop diagonal gradient
 (`#1E145A -> #33249E -> #4F46E5`). The light sweep is a white ellipse at 16%
 opacity with a 90px layer blur, clipped by the card.
 
-The footer is full-bleed `Ink` with five 224px columns at 40px gutters. Columns
-4 and 5 carry a second heading group (SUPPORT, LEGAL). Link text is white at
-72% opacity; headings are 13px Bold with +4% tracking.
+The footer (`69:336`) is full-bleed `Ink`, 1440x656, in three bands:
 
-Only the Landing page has the new footer. The Shop, Article, Product detail and
-About frames still use the original template footer.
+1. Five 224px link columns at 40px gutters. Columns 4 and 5 carry a second
+   heading group (SUPPORT, LEGAL). Link text is white at 72% opacity; headings
+   are 13px Bold with +4% tracking.
+2. A 1280x150 banner card, radius 16, fill `#F6F3FC`, with a 44px Bold brand
+   headline and an arrow vector on the right.
+3. A bottom bar: copyright and legal links on the left, five social icons on
+   the right (white containers with ink glyphs).
+
+It is a component, instanced on all five page frames.
 
 ## Next
 
