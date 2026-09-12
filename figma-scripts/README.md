@@ -31,7 +31,24 @@ product UI, not marketing pages — and have no prototype wiring.
 Each holds one dashed `Placeholder` (1280x400) reading the screen name and
 `Drop screenshot here` — delete it once the screenshot is pasted in.
 
-Business Phone, Contact Center Solution, Platform, Resources and Demo request
+### Business Phone hero (`Hero / Split`, `121:992`)
+
+The Business Phone page uses a split hero instead of the centred shell:
+1440x720 at y=164, horizontal gradient white → `#EFEAFD` with a blurred
+brand-tint ellipse behind the visual.
+
+| Element | Spec |
+|---|---|
+| Left column `Copy` | x=80, vertically centred |
+| Headline | 56px Regular, −3% tracking, measure 540, wraps to 2 lines |
+| Subhead | 19px Regular at 80% opacity, measure 510 |
+| `Start free trial` | Primary, navigates to Pricing `70:714` |
+| `Talk to sales` | Secondary, navigates to Demo request `106:768` |
+| `App screenshot` | 650x620 dashed placeholder, right edge at x=1360 |
+
+Drop a screenshot into `App screenshot` and delete its two label layers.
+
+Contact Center Solution, Platform, Resources and Demo request
 are shells: header instance, page hero (title, subhead, CTA), a dashed content
 placeholder, and footer instance. In every page the **header instance is the
 last child** so dropdowns draw above page content.
