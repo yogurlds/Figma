@@ -10,11 +10,29 @@ Figma file: `RRfHYjJ1gZDmk7uxDzikwO` (Ringfully) · page `0:1`
 | Product `70:312` | -2241 | 1440x1753 |
 | Platform `70:446` | -721 | 1440x1812 |
 | Resources `70:580` | 799 | 1440x1753 |
-| Pricing `70:714` | 2319 | 1440x1727 |
+| Pricing `70:714` | 2319 | 1440x1912 |
 
 The original Article, Shop, Product detail page and About frames were deleted.
-The four replacement pages are shells: header instance, page hero (title,
+Product, Platform and Resources are shells: header instance, page hero (title,
 subhead, Request a Quote), a dashed content placeholder, and footer instance.
+Pricing carries the real pricing section (below).
+
+## Pricing page (`70:714`)
+
+`Section / Pricing` (`81:635`) at y=164: eyebrow, title, subhead, a two-product
+segmented tab control, a product blurb, a MONTHLY/ANNUAL cycle toggle with a
+currency selector, then the plan cards.
+
+Cards are 405px wide at 32px gutters, heights equalised per row.
+
+| Row | Node | Plans | Default |
+|---|---|---|---|
+| Business Phone plans | `82:635` | Standard $25 · Pro $40 | visible |
+| Contact Center plans | `82:695` | Basic $75 · Full $115 · AI Powered $150 | hidden |
+
+Switching product is a visibility toggle on the two rows — **also update the
+active tab fill and the product blurb text**, which are static. Prices are
+placeholders.
 
 ## Header variants and navigation
 
@@ -24,7 +42,7 @@ The header is a variant set (`74:749`) with a single `State` property:
 |---|---|---|
 | State=Default | `11:2` | none |
 | State=Product | `74:635` | Business Phone · Contact Center Solution |
-| State=Platform | `74:673` | AI Agents · Support · Sell · Connect |
+| State=Platform | `74:673` | Support · Privacy · Integration · Developers · API's · Overview · AI |
 | State=Resources | `74:711` | Documentation · Blog · Agentic · InboundCX University |
 
 Nav labels match the four page frames: Product, Platform, Resources, Pricing.
