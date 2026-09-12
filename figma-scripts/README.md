@@ -171,9 +171,66 @@ Login ──More Login Options──> Organization ──Next──> Org selecte
   └──[change]──> Region menu ──(16 regions or Log In)──> Login
 ```
 
-Shared shell on all four: centred wordmark, white card with 44px input rows
-(icon box + field), footer wordmark, copyright, and a bottom bar with
-Terms / Privacy / Help and a Language select.
+Shared shell on all four: centred wordmark, a glass card with 44px input
+capsules (icon box + field), footer wordmark, copyright, and two floating glass
+capsules along the bottom — Terms / Privacy / Help, and the Language select.
+
+#### Liquid Glass material (all four login states)
+
+The login flow is the one place in the file built on Apple's **Liquid Glass**
+material rather than the flat marketing style. Figma has no `glassEffect()`;
+the equivalent is assembled by hand, and this recipe is the reusable one:
+
+| Layer | Value |
+|---|---|
+| Fill | linear gradient 45°, `#FFF @ 50%` → `#FFF @ 26%` (panels) · `@ 62%` → `@ 44%` (inputs) · `@ 38%` → `@ 18%` (floating chrome) |
+| Tinted variant | same gradient on `#4F46E5` — `@ 96%` → `@ 78%` for the primary button, `@ 62%` → `@ 38%` for the org panel |
+| Effect | `{type:'BACKGROUND_BLUR', radius: 18–46}` — the refraction. **This is the whole effect**; without it the node is just a translucent rectangle |
+| Effect | `DROP_SHADOW` ink @ 18%, y+18, r40 — lifts the pane off the wallpaper |
+| Effect | `INNER_SHADOW` white @ 55%, y+1, r1 — the top specular lip |
+| Effect | `INNER_SHADOW` ink @ 10%, y−1, r2 — the bottom contact shade |
+| Stroke | 1px **gradient** paint, white 70% → 18% → 8% at 45°, `strokeAlign = 'INSIDE'` — the rim light that sells it |
+| Radius | 28 panels · 20–26 controls and popovers · 22–24 capsules |
+
+`BACKGROUND_BLUR` only renders when three things are true: the node's fill is
+translucent, there is content **behind it inside the same clipping context**,
+and the node sits above that content in z-order. All three are satisfied by the
+`Backdrop` frame described below.
+
+**Backdrop** — first child of every login frame: a white → `#EFEAFD` base with
+four `LAYER_BLUR` (150–180) ellipses in brand `#4F46E5`, violet `#7C5CE6`, warm
+`#F5A05A` and coral `#F2766B`. The blobs are positioned so the strongest colour
+transition sits directly behind the card, which is where refraction reads.
+
+> **Set `clipsContent = true` on the page frame first.** The blur radii are
+> larger than the blobs' margins, so an unclipped frame bleeds colour across
+> the canvas and onto the neighbouring login states.
+
+Because the wallpaper is saturated, the wordmarks, footer wordmark and
+copyright are **white**; body text stays ink `#1E1B4B` on the light glass, and
+the card fill was raised to 50% white specifically so that text keeps its
+contrast. Legibility set the fill opacity, not the other way round.
+
+#### Restyling these frames: mutate, never rebuild
+
+**22 prototype reactions live on nodes inside the four login frames.** Deleting
+and recreating a node destroys its reaction silently. Every glass change is
+therefore applied in place — `fills`, `strokes`, `effects`, `cornerRadius`,
+`x`/`y` only. After any restyle, re-assert all 22 read back with their original
+destinations.
+
+Layout changes the glass pass made:
+
+- The full-bleed `Bottom bar` became a **258x48 centred floating capsule**
+  holding Terms · Privacy · Help, with `Language` and `Language select` moved
+  into a new sibling `Language bar` capsule at x=1140. The `Divider` is hidden,
+  not deleted.
+- `Region popover` is now **468x264, two columns of eight rows**, so it clears
+  the floating chrome instead of running to y=882 and colliding with it.
+- On `Org selected`, the card and org panel are one slab: per-corner radii
+  (`topLeftRadius`/`bottomLeftRadius` on the card, right corners on the panel)
+  with the seam left as a glass joint. The 80-hexagon pattern drops to 14%
+  opacity so it reads as texture suspended inside the tinted glass.
 
 #### Decorative patterns: use real nodes, not one big vector
 
