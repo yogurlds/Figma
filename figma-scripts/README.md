@@ -192,19 +192,35 @@ translucent, there is content **behind it inside the same clipping context**,
 and the node sits above that content in z-order. All three are satisfied by the
 `Backdrop` frame described below.
 
-**Backdrop** — first child of every login frame: a white → `#EFEAFD` base with
-four `LAYER_BLUR` (150–180) ellipses in brand `#4F46E5`, violet `#7C5CE6`, warm
-`#F5A05A` and coral `#F2766B`. The blobs are positioned so the strongest colour
-transition sits directly behind the card, which is where refraction reads.
+**Backdrop** — first child of every login frame, and deliberately
+**monochromatic**. It was first built from four hues (brand, violet, a warm
+amber and a coral); that read as too playful for a sign-in screen, so it is now
+one hue moved only in *value* and *opacity*:
+
+| Role | Value | Placement |
+|---|---|---|
+| Light | `#857DF0` | upper-left lift |
+| Brand | `#4F46E5` | core glow, directly behind the card |
+| Deep | `#2E2691` | lower-right weight |
+| Wash | `#E8E5FD` | base gradient endpoint, from white |
+
+Each glow is a `GRADIENT_RADIAL` whose stops fade the hue **out to alpha 0**
+(0 / 0.45 / 1) — that is what gives the radiant fade. A modest `LAYER_BLUR`
+(70–90) only smooths banding; it is not doing the work. The core glow sits
+behind the card because that is where refraction reads. Glow centres are
+offset slightly per frame so the four states are not identical.
 
 > **Set `clipsContent = true` on the page frame first.** The blur radii are
 > larger than the blobs' margins, so an unclipped frame bleeds colour across
 > the canvas and onto the neighbouring login states.
 
-Because the wallpaper is saturated, the wordmarks, footer wordmark and
-copyright are **white**; body text stays ink `#1E1B4B` on the light glass, and
-the card fill was raised to 50% white specifically so that text keeps its
-contrast. Legibility set the fill opacity, not the other way round.
+Chrome colour follows the field, not a rule. The centred wordmark sits on the
+mid-value core glow and stays **white**; the footer wordmark and copyright sit
+bottom-left where the field fades to near-white, so they are **ink at 62% / 48%**
+— white was illegible there once the backdrop went monochrome. Body text stays
+ink `#1E1B4B` on the light glass, and the card fill was raised to 50% white
+specifically so that text keeps its contrast. Legibility set these values, not
+the other way round.
 
 #### Restyling these frames: mutate, never rebuild
 
