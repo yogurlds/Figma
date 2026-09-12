@@ -48,6 +48,42 @@ brand-tint ellipse behind the visual.
 
 Drop a screenshot into `App screenshot` and delete its two label layers.
 
+### Business Phone section stack (`70:312`, 1440x4852)
+
+| y | Section | Node |
+|---|---|---|
+| 0 | Navigation (last child, keeps dropdowns on top) | `70:313` |
+| 164 | Hero / Split | `121:992` |
+| 884 | Screens carousel (instance) | `132:1017` |
+| 1564 | Features — 6 mini UI mocks | `130:992` |
+| 2904 | FAQ — 6 static rows | `132:992` |
+| 3716 | Closing CTA (cloned from Landing `58:230`) | `132:1035` |
+| 4196 | Footer | `70:363` |
+
+### Screens carousel (`128:1068`)
+
+Component set at x=7400, property `Position` = 1..4. Each variant is 1440x680
+with `clipsContent = true`, holding four 820x512 cards so the side ones crop at
+the frame edge:
+
+| Slot | x | Visible |
+|---|---|---|
+| Left neighbour | -550 | ~270px, cropped |
+| Centre | 310 | full, drop shadow, no opacity fade |
+| Right neighbour | 1170 | ~270px, cropped |
+| Off-stage | 2030 | hidden |
+
+`Position=N` puts screen N left, N+1 centre, N+2 right (mod 4), so clicking
+steps 1-2-3 → 2-3-4 → 3-4-1 → 4-1-2. All three on-stage cards carry On Click →
+Change To the next position, Smart Animate 300ms (12 reactions). The four dots
+are decorative.
+
+**Same dissolution risk as the `Header` set** — if a variant is dragged out of
+the purple dashed container, all 12 `CHANGE_TO` reactions are silently stripped.
+Recovery is the procedure documented above for the header.
+
+Cards are dashed placeholders named after the four `App — *` frames.
+
 Contact Center Solution, Platform, Resources and Demo request
 are shells: header instance, page hero (title, subhead, CTA), a dashed content
 placeholder, and footer instance. In every page the **header instance is the
