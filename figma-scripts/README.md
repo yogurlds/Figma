@@ -7,13 +7,32 @@ Figma file: `RRfHYjJ1gZDmk7uxDzikwO` (Ringfully) · page `0:1`
 | Frame | x, y | Size |
 |---|---|---|
 | Landing page `1:1413` | -3761, 0 | 1440x3811 |
-| Business Phone `70:312` | -2241, 0 | 1440x1753 |
+| Business Phone `70:312` | -2241, 0 | 1440x4852 |
 | Platform `70:446` | -721, 0 | 1440x1812 |
 | Resources `70:580` | 799, 0 | 1440x1753 |
 | Pricing `70:714` | 2319, 0 | 1440x1912 |
-| Contact Center Solution `106:635` | -3761, 4200 | 1440x1812 |
-| Pricing — Contact Center `106:901` | -2241, 4200 | 1440x1912 |
-| Demo request `106:768` | -721, 4200 | 1440x1753 |
+| Contact Center Solution `106:635` | -3761, 5252 | 1440x5098 |
+| Pricing — Contact Center `106:901` | -2241, 5252 | 1440x1912 |
+| Demo request `106:768` | -721, 5252 | 1440x1753 |
+| Integrations `151:1126` | 799, 5252 | 1440x3840 |
+| App screens `116:992`…`116:1004` | -3761…799, 10852 | 1440x900 each |
+
+### Canvas rows — check for overlap after ANY page height change
+
+Rows are pitched off the **tallest frame in the row**, not a fixed guess:
+row 1 at y=0 (tallest 4852), row 2 at y=5252 (tallest 5098), row 3 at y=10852.
+
+**A page that grows silently slides under the next row**, and a blank frame
+then renders on top of real content. This happened: `Contact Center Solution`
+grew from 1812 to 5098 and ran under `App — Login`, whose white frame hid rows
+two and three of the features section — the mocks were all present and correct
+but invisible. `Business Phone` likewise ran under `Pricing — Contact Center`,
+hiding its own CTA and footer.
+
+Section-level verification does not catch this. After any height change, assert
+**zero overlaps across every top-level node** by comparing bounding boxes
+pairwise.
+
 
 ### App screens (row 3, y=6500)
 
@@ -83,6 +102,23 @@ the purple dashed container, all 12 `CHANGE_TO` reactions are silently stripped.
 Recovery is the procedure documented above for the header.
 
 Cards are dashed placeholders named after the four `App — *` frames.
+
+### Integrations page stack (`151:1126`, 1440x3840)
+
+| y | Section | Node |
+|---|---|---|
+| 0 | Navigation (last child) | — |
+| 164 | Hero / Integrations — split, angled lavender panel | `150:1026` |
+| 1064 | Popular integrations — 6 cards, 6th cropped, static arrows | `151:1026` |
+| 1704 | Marketplace — 34 partner tiles, 6 columns | `151:1056` |
+| 2704 | Closing CTA | cloned from `132:1035` |
+| 3184 | Footer | — |
+
+Partner tiles show the partner **name in neutral grey type** as a stand-in for
+the real logo SVG. The prev/next arrows are present but unwired.
+
+`Item / Integration` (`80:643`) in the Platform dropdown navigates here; the
+other six Platform entries still point at `70:446`.
 
 ### Contact Center Solution section stack (`106:635`, 1440x5098)
 
