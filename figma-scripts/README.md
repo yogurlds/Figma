@@ -599,14 +599,14 @@ Every screen exists in a **Day** and a **Night** theme: 16 frames, all
 
 | Product | Screen | Day | Night |
 |---|---|---|---|
-| BP | Dialer | `244:1978` | `267:1978` |
-| BP | Calls & contacts | `249:1978` | `267:2152` |
-| BP | Analytics | `250:1978` | `267:2287` |
-| BP | Voicemail & SMS | `251:1978` | `267:2398` |
-| CC | Supervisor wallboard | `252:1978` | `268:1978` |
-| CC | Agent workspace | `255:1978` | `268:2206` |
-| CC | IVR flow designer | `259:1978` | `268:2369` |
-| CC | Quality & WFM | `261:1978` | `268:2609` |
+| BP | Dialer | `244:1978` | `278:1978` |
+| BP | Calls & contacts | `249:1978` | `278:2152` |
+| BP | Analytics | `250:1978` | `278:2287` |
+| BP | Voicemail & SMS | `251:1978` | `278:2398` |
+| CC | Supervisor wallboard | `252:1978` | `278:2544` |
+| CC | Agent workspace | `255:1978` | `278:2772` |
+| CC | IVR flow designer | `259:1978` | `278:2935` |
+| CC | Quality & WFM | `261:1978` | `278:3175` |
 
 Day frames sit at x = -3761, -2241, -721, 799; Night frames at x = 2319, 3839,
 5359, 6879 in the same row.
@@ -628,19 +628,50 @@ gutter) under a 56px bar, usable width **1312px**.
 
 Flat surfaces — **no gradient wallpaper**. That belongs to the login flow only.
 
+The surfaces are **warm neutral greys, not tinted indigo**. The first version
+used a lavender ground and an indigo `#19163A` card surface; an area audit
+showed that surface alone covering ~8M px², which made every screen read as a
+saturated purple field. Brand belongs in the accents, not the substrate.
+
 | Token | Day | Night |
 |---|---|---|
-| Ground | `#F5F4FB` | `#0F0D24` |
-| Surface / card | `#FFFFFF` | `#19163A` |
-| Tile / raised | `#F7F5FF` | `#221E47` |
-| Rail | `#1E1B4B` | `#14112E` |
-| Tint | `#EAE7FD` | `#2E2A5C` |
-| Hairline | `#E4E1F4` | `#302C5E` |
+| Ground | `#F5F4F2` | `#141312` |
+| Surface / card | `#FFFFFF` | `#1E1D1B` |
+| Tile / raised | `#F1F0ED` | `#272523` |
+| Rail **fill** | `#242320` | `#100F0E` |
+| Tint (brand badges) | `#E9E6F2` | `#343230` |
+| Hairline | `#E7E5E1` | `#35332F` |
 | Text | `#1E1B4B` | `#FFFFFF` |
 | Brand — fills | `#4F46E5` | `#4F46E5` (unchanged) |
 | Brand — text and icons | `#4F46E5` | **`#7C74F0`** |
-| Positive | `#1E9E6A` | `#3DCB8F` |
-| Negative | `#E5484D` | `#FF6B6F` |
+| Chart neutral — strong | `#DAD8D4` | `#3A3835` |
+| Chart neutral — mid / light | `#E4E2DE` / `#EDEBE7` | `#302E2B` / `#282623` |
+| Positive | `#3E8E6E` | `#5FB894` |
+| Negative | `#CC5F5C` | `#E38A87` |
+
+Note that `#1E1B4B` is text-only now. The rail used the same value as a large
+fill, which is why it became `#242320` while the text token was left alone —
+the remap below is type-aware precisely so those two can diverge.
+
+### Brand marks one value
+
+**In any set of repeated data marks, the set is neutral and only the active,
+peak or current member is brand.** A 36-bar waveform, a 24-bar stacked chart
+and a 36-cell schedule grid were all fully brand-coloured at first; that is
+what made the screens shout. Applied to:
+
+| Screen | Set | Brand marks |
+|---|---|---|
+| BP Dialer · Voicemail | waveform bars | the played portion |
+| BP Analytics | donut segments | the largest slice |
+| BP Analytics | teammate `connected %` | the best performer |
+| CC Wallboard | stacked hour bars | the peak hour |
+| CC Quality | coverage grid cells | the current hour column |
+| CC IVR designer | palette icons | the AI group |
+
+Brand is kept unconditionally on primary buttons, the active tab or rail slot,
+the active control, single-series line charts, progress rings, the AI badge and
+tool chips. Brand fills per theme dropped from **231 to 126** doing this.
 
 **`#7C74F0` is a new token.** `#4F46E5` as small text or a hairline on a
 near-black ground is too dim to read; filled buttons keep the true brand,
@@ -663,6 +694,13 @@ so the two themes cannot drift apart structurally. Three rules make it work:
    is what keeps the rail glyphs and every tint badge alive.
 3. **Node opacity is not paint opacity.** `node.opacity = 0.6` is untouched by
    the pass and carries the muted-text hierarchy across for free.
+4. **Opacity-guard decorative colour, never semantic colour.** Rule 2 skips
+   translucent paints, which is right for tints and overlays — but it also
+   skipped the `POS @ 12%` / `NEG @ 12%` badge fills behind *ON A CALL*, *LIVE*,
+   *PASSED* and the needs-attention dots, leaving vivid old greens and reds
+   stranded on an otherwise neutral screen. Status colour carries meaning, so
+   it gets a second pass that remaps it **at any opacity**. The first audit
+   after the remap is what caught this; 28 paints needed fixing.
 
 Two things the colour map cannot infer are handled by node name: `Canvas grid`
 (ink dots at 10% → white at 10%) and the glass panels (light-on-dark
