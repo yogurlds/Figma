@@ -4,18 +4,23 @@ Figma file: `RRfHYjJ1gZDmk7uxDzikwO` (Ringfully) · page `0:1`
 
 ## Frames on the canvas
 
-| Frame | x | Size |
+| Frame | x, y | Size |
 |---|---|---|
-| Landing page `1:1413` | -3761 | 1440x3811 |
-| Product `70:312` | -2241 | 1440x1753 |
-| Platform `70:446` | -721 | 1440x1812 |
-| Resources `70:580` | 799 | 1440x1753 |
-| Pricing `70:714` | 2319 | 1440x1912 |
+| Landing page `1:1413` | -3761, 0 | 1440x3811 |
+| Business Phone `70:312` | -2241, 0 | 1440x1753 |
+| Platform `70:446` | -721, 0 | 1440x1812 |
+| Resources `70:580` | 799, 0 | 1440x1753 |
+| Pricing `70:714` | 2319, 0 | 1440x1912 |
+| Contact Center Solution `106:635` | -3761, 4200 | 1440x1812 |
+| Pricing — Contact Center `106:901` | -2241, 4200 | 1440x1912 |
+| Demo request `106:768` | -721, 4200 | 1440x1753 |
 
-The original Article, Shop, Product detail page and About frames were deleted.
-Product, Platform and Resources are shells: header instance, page hero (title,
-subhead, Request a Quote), a dashed content placeholder, and footer instance.
-Pricing carries the real pricing section (below).
+Business Phone, Contact Center Solution, Platform, Resources and Demo request
+are shells: header instance, page hero (title, subhead, CTA), a dashed content
+placeholder, and footer instance. In every page the **header instance is the
+last child** so dropdowns draw above page content.
+
+The two Pricing frames carry the real pricing section (below).
 
 ## Pricing page (`70:714`)
 
@@ -30,9 +35,22 @@ Cards are 405px wide at 32px gutters, heights equalised per row.
 | Business Phone plans | `82:635` | Standard $25 · Pro $40 | visible |
 | Contact Center plans | `82:695` | Basic $75 · Full $115 · AI Powered $150 | hidden |
 
-Switching product is a visibility toggle on the two rows — **also update the
-active tab fill and the product blurb text**, which are static. Prices are
-placeholders.
+### The product tabs are two frames, not a toggle
+
+Each Pricing frame shows one plan row with its own tab styled active, and the
+inactive tab navigates to the other frame:
+
+| Frame | Visible row | Inactive tab navigates to |
+|---|---|---|
+| Pricing `70:714` | Business Phone plans | Pricing — Contact Center `106:901` |
+| Pricing — Contact Center `106:901` | Contact Center plans | Pricing `70:714` |
+
+This was chosen over component variants because frame targets have survived
+every breakage in this file, while `CHANGE_TO` reactions have not.
+
+**Caveat: pricing copy now lives in two frames.** Any price, plan name or
+feature edit must be made in *both* Pricing frames or they will disagree.
+Prices are placeholders.
 
 ## Header variants and navigation
 
@@ -78,11 +96,13 @@ Per variant (7 x 4 = 28):
 | Pricing | Navigate -> Pricing `70:714`, Dissolve 150ms |
 | Logo | Navigate -> Landing `1:1413` |
 | Try free (`Button / Secondary`) | Navigate -> Pricing `70:714` |
-| Request a demo (`Button / Primary`) | Navigate -> Pricing `70:714` |
+| Request a demo (`Button / Primary`) | Navigate -> Demo request `106:768` |
 
-Dropdown entries (13), each navigating to its own menu's page: Product panel
-(2) -> Product `70:312`, Platform panel (7) -> Platform `70:446`, Resources
-panel (4) -> Resources `70:580`.
+Dropdown entries (13): the two Product entries go to their own pages —
+`Business Phone` -> `70:312`, `Contact Center Solution` -> `106:635`. Platform
+panel (7) -> Platform `70:446`, Resources panel (4) -> Resources `70:580`.
+
+The footer's `Book a demo` (`69:298`) also navigates to Demo request `106:768`.
 
 ### Overlays are not an option — do not retry
 
