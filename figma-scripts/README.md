@@ -566,6 +566,83 @@ The footer (`69:336`) is full-bleed `Ink`, 1440x656, in three bands:
 
 It is a component, instanced on all five page frames.
 
+## Article template (row 8, y=22992)
+
+`Article — Template` `292:2055` at x=-3761. Not a static page — a small system
+for reformatting articles: an assembled example, draggable body blocks, and
+shared text styles.
+
+### It is the only auto-layout page in the file, and that needed a trick
+
+Every other page is absolutely positioned with the header as last child so its
+dropdown draws on top. Auto-layout ties layer order to visual order, so a
+header first in the flow would sit **behind** the article.
+
+The fix: the page frame is auto-layout VERTICAL with `paddingTop = 164`, and
+the `Navigation` instance is appended **last** with
+`layoutPositioning = 'ABSOLUTE'` at (0,0). An absolutely-positioned child
+leaves the flow but keeps its z-order — so the header pins to the top, draws
+above everything, and the page still hugs its content. Delete a paragraph and
+the frame shortens by itself.
+
+```
+Article — Template        auto-layout V, paddingTop 164, hug   292:2055
+├─ Article                                                     292:2056
+│  ├─ Section / Article hero      531   pill · H1 · lead · byline
+│  ├─ Section / Hero image        650   1280x560 + caption
+│  ├─ Body                       2843   15 block instances     292:2075
+│  ├─ Section / Author bio        223
+│  ├─ Section / Related posts     510   3 cards
+│  ├─ Section / Closing CTA       480   clone of 132:1035
+│  └─ Footer                      656   instance of 69:336
+└─ Navigation                           ABSOLUTE at (0,0), last child
+```
+
+Body measure is **800px** centred (1440 − 2×320) — a comfortable line length
+at 18px.
+
+### Text styles — the file's first
+
+Eight `Article / …` styles: Eyebrow (Bold 10 +6%) · H1 (Regular 46 −3%) ·
+H2 (SemiBold 28 −1.5%) · H3 (SemiBold 20 −1%) · Lead (Regular 22) ·
+Body (Regular 18, lh 1.75) · Quote (Regular 26 −1%) · Caption (Regular 13).
+
+All eight are **bound** to real nodes (60 in the page alone), so editing one
+style restyles every article built from these blocks. The creation script looks
+each style up by name before creating, so re-running it never duplicates.
+
+### Block components — drag these in from Assets
+
+Twelve, all 800 wide, auto-layout, hugging, at x=-2100 down from y=22992:
+
+| Block | Node | Block | Node |
+|---|---|---|---|
+| Heading 2 | `287:1980` | Image + caption | `291:2059` |
+| Heading 3 | `287:1983` | Callout | `291:2063` |
+| Paragraph | `287:1986` | Key takeaways | `291:2078` |
+| Pull quote | `287:1992` | Inline CTA | `291:2084` |
+| Bulleted list | `287:2006` | Divider | `291:2087` |
+| Numbered list | `287:2020` | Data table | `291:2128` |
+
+To reformat an article: edit the text in place, drag blocks from Assets into
+`Body`, delete what you do not need. The page reflows on its own.
+
+### Wiring
+
+Seven `NAVIGATE` reactions from the Blog page open the article — the
+`Featured post` card and all six `Post` cards.
+
+### Two bugs this build produced, both worth remembering
+
+- **A dead `else` branch leaked four empty frames onto the canvas.**
+  `else { const rl = figma.createFrame(); }` — a node created and never
+  appended is auto-added to the current page at (0,0). The canvas overlap
+  assertion caught it: 18 new top-level nodes when 13 were expected. **Never
+  create a node you do not immediately append.**
+- The same dead branch meant the data table shipped without row dividers.
+  Fixed with per-side stroke weights (`strokeBottomWeight = 1`, the other three
+  `0`) on every row but the last.
+
 ## No invented customers
 
 Fabricated social proof has been stripped out: the Demo request testimonial and
