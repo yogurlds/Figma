@@ -36,7 +36,7 @@ placeholders.
 
 ## Header variants and navigation
 
-The header is a variant set (`74:749`) with a single `State` property:
+The header is a variant set (`89:635`, named `Header`) with a single `State` property:
 
 | Variant | Node | Dropdown |
 |---|---|---|
@@ -53,6 +53,20 @@ so swapping state never changes layout. Each variant has `clipsContent = false`,
 and **header instances are the last child of their page frame** so the panel
 draws above page content.
 
+### Do not put "/" in the component set name
+
+The set was originally named `Navigation / Header`. Figma treats `/` as a
+grouping path, which conflicts with variant naming — the set silently dissolved
+between sessions, leaving four loose components with mangled names
+(`Navigation / Header/Navigation/Header/Default`). Every `CHANGE_TO` reaction
+was stripped at the same time, because its destination variant no longer
+belonged to a set, while the `NAVIGATE` reaction on Pricing survived (it points
+at a frame).
+
+Keep the set name slash-free, and after any structural change **verify in a
+separate call** that the set still exists and the reactions are still attached —
+they read back fine immediately after being written, then disappear.
+
 Prototype wiring (16 reactions, On Click):
 
 - Product / Platform / Resources -> Change To that variant, Smart Animate 200ms
@@ -63,7 +77,7 @@ Prototype wiring (16 reactions, On Click):
 
 | Component | Node | Size |
 |---|---|---|
-| Navigation / Header (variant set) | `74:749` | 1440x164 per variant |
+| Header (variant set) | `89:635` | 1440x164 per variant |
 | Footer | `69:336` | 1440x656 |
 | Stage 1-6 carousel cards | `17:204`, `17:222`, `17:235`, `18:204`, `18:221`, `18:234` | 440x171 |
 
