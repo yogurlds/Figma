@@ -14,9 +14,11 @@ Figma file: `RRfHYjJ1gZDmk7uxDzikwO` (Ringfully) · page `0:1`
 | Demo request `106:768` | -721, 5252 | 1440x2360 |
 | Integrations `151:1126` | 799, 5252 | 1440x3840 |
 | Support `155:1145` | 2319, 5252 | 1440x1824 |
-| App screens row 3 | -3761…5359, 10852 | 1440x900 each |
+| Login states row 3 | -3761…799, 10852 | 1440x900 each |
 | Platform nested pages row 4 | -3761…2319, 12152 | see below |
 | Resources nested pages row 5 | -3761…799, 16712 | see below |
+| Business Phone app row 6 | -3761…6879, 20392 | 1440x900 each |
+| Contact Center app row 7 | -3761…6879, 21692 | 1440x900 each |
 
 The `Platform` and `Resources` category frames **no longer exist**. They were
 empty shells standing in for nav categories; every entry in those two dropdowns
@@ -27,7 +29,8 @@ The categories are containers in the nav, not destinations.
 
 Rows are pitched off the **tallest frame in the row**, not a fixed guess:
 row 1 at y=0 (tallest 4852), row 2 at y=5252 (tallest 5098), row 3 at y=10852
-(tallest 900), row 4 at y=12152 (tallest 4160), row 5 at y=16712.
+(tallest 900), row 4 at y=12152 (tallest 4160), row 5 at y=16712 (tallest 3280),
+row 6 at y=20392 (900), row 7 at y=21692.
 
 **A page that grows silently slides under the next row**, and a blank frame
 then renders on top of real content. This happened: `Contact Center Solution`
@@ -47,26 +50,11 @@ Real product UI, not screenshot placeholders. They intentionally carry **no
 header or footer** — they are the web app, not marketing pages — and have no
 prototype wiring. Drop them into the product-page carousels as needed.
 
-| Frame | Node | x | Contents |
-|---|---|---|---|
-| App — Login (+3 states) | `116:992` … `166:1188` | -3761…799 | the login flow, below |
-| App — Dashboard Home | `116:996` | 2319 | KPI tiles, live queue, agent status, activity |
-| App — Analytics | `116:1000` | 3839 | filters, line chart, donut, hourly bars, queue table |
-| App — Call Management / Architect | `116:1004` | 5359 | palette, flow canvas, inspector |
-
-#### Shared app chrome
-
-All three build on the same two pieces, cloned from Dashboard Home:
-
-| Piece | Node | Spec |
-|---|---|---|
-| `App / Rail` | `198:2216` | 64px, `Ink`, logo mark, 6 icon slots, avatar pinned bottom |
-| `App / Top bar` | `198:2233` | 56px white, 1px `Line` rule, title, search, org chip, action button |
-
-To make a new screen: clone both, set the active rail slot to `WHITE @ 14%`
-fill (and its glyph to `WHITE @ 95%`), reset the previously active one, and
-retitle the top bar. Content starts at x=96, y≈88; the usable content width is
-**1312px** (1440 − 64 rail − 2×32 gutter).
+Row 3 now holds **only the four login states** (`116:992`, `162:1183`,
+`166:1145`, `166:1188`). The old generic `App — Dashboard Home`,
+`App — Analytics` and `App — Call Management / Architect` were **deleted** —
+they predated the product split and misrepresented both products. The app UI
+now lives in rows 6 and 7, below.
 
 #### Chart construction
 
@@ -129,7 +117,14 @@ are decorative.
 the purple dashed container, all 12 `CHANGE_TO` reactions are silently stripped.
 Recovery is the procedure documented above for the header.
 
-Cards are dashed placeholders named after the four `App — *` frames.
+Cards are dashed placeholders named after the four old `App — *` frames.
+
+> **Open follow-on.** Both product pages instance this *same* set
+> (`132:1017` on Business Phone, `144:1009` on Contact Center), and its cards
+> still name the three deleted generic screens. Now that each product has its
+> own four app screens (rows 6 and 7), the set should be duplicated into two
+> product-specific sets and each instance repointed. Until that is done, both
+> marketing pages show the same generic placeholders.
 
 ### Support page (`155:1145`) — knowledge base
 
@@ -571,6 +566,96 @@ or endorsement slots:
 | App — Dashboard Home, `Card / Activity` | "took a call from Halcyon" | sample data inside a product screen, same as the fake phone numbers |
 | Platform — AI, `Quote card` | attributed testimonial | still a fabricated endorsement — **remove or replace before this goes near a real audience** |
 | Resources — Blog, post 4 | "Meridian Health answers 3,400 calls a night" | placeholder editorial headline, reads as a fake case study |
+
+## The two product apps (rows 6 and 7)
+
+The app UI is **two separate products**, not one generic dashboard, because
+they are sold to different people:
+
+- **Business Phone** — one person or a small team making **outbound** calls
+  with light analytics. It deliberately contains no queue, SLA, IVR, WFM, QA
+  or API surface. If one of those words appears on a BP screen, it is a bug.
+- **Contact Center Solution** — SMB to enterprise, the full CCaaS surface plus
+  agentic AI.
+
+Every screen exists in a **Day** and a **Night** theme: 16 frames, all
+1440x900.
+
+| Product | Screen | Day | Night |
+|---|---|---|---|
+| BP | Dialer | `244:1978` | `267:1978` |
+| BP | Calls & contacts | `249:1978` | `267:2152` |
+| BP | Analytics | `250:1978` | `267:2287` |
+| BP | Voicemail & SMS | `251:1978` | `267:2398` |
+| CC | Supervisor wallboard | `252:1978` | `268:1978` |
+| CC | Agent workspace | `255:1978` | `268:2206` |
+| CC | IVR flow designer | `259:1978` | `268:2369` |
+| CC | Quality & WFM | `261:1978` | `268:2609` |
+
+Day frames sit at x = -3761, -2241, -721, 799; Night frames at x = 2319, 3839,
+5359, 6879 in the same row.
+
+### The chrome differs on purpose
+
+The navigation itself signals who each product is for. Do not unify them.
+
+| Product | Chrome | Source node |
+|---|---|---|
+| Business Phone | **No rail.** 72px top bar: wordmark, five text tabs, search, `+ New call`, avatar. Reads as a light tool. | `BP / Top bar` `244:1979` |
+| Contact Center | 64px `Ink` left icon rail (8 slots) **plus** a 56px top bar with queue selector, environment chip and agent-state control. Reads as a platform. | `CC / Rail` `252:1979`, `CC / Top bar` `252:2000` |
+
+Clone the chrome onto a new screen, then set the active slot/tab and retitle.
+BP content starts at x=32 under a 72px bar; CC content at x=96 (64 rail + 32
+gutter) under a 56px bar, usable width **1312px**.
+
+### Day / Night tokens
+
+Flat surfaces — **no gradient wallpaper**. That belongs to the login flow only.
+
+| Token | Day | Night |
+|---|---|---|
+| Ground | `#F5F4FB` | `#0F0D24` |
+| Surface / card | `#FFFFFF` | `#19163A` |
+| Tile / raised | `#F7F5FF` | `#221E47` |
+| Rail | `#1E1B4B` | `#14112E` |
+| Tint | `#EAE7FD` | `#2E2A5C` |
+| Hairline | `#E4E1F4` | `#302C5E` |
+| Text | `#1E1B4B` | `#FFFFFF` |
+| Brand — fills | `#4F46E5` | `#4F46E5` (unchanged) |
+| Brand — text and icons | `#4F46E5` | **`#7C74F0`** |
+| Positive | `#1E9E6A` | `#3DCB8F` |
+| Negative | `#E5484D` | `#FF6B6F` |
+
+**`#7C74F0` is a new token.** `#4F46E5` as small text or a hairline on a
+near-black ground is too dim to read; filled buttons keep the true brand,
+everything else lifts.
+
+Glass appears on exactly two floating elements — the BP recording toast and the
+Architect simulator panel. Everything else is solid with a hairline.
+
+### Building Night: clone and remap, never rebuild
+
+Each Night frame is a `clone()` of its Day frame with a recursive token remap,
+so the two themes cannot drift apart structurally. Three rules make it work:
+
+1. **The map is type-aware.** A `TEXT` fill of `#1E1B4B` becomes white; the
+   same colour as a *frame* fill is the rail and becomes `#14112E`. One map for
+   text, one for fills, one for strokes.
+2. **Only remap paints at full opacity.** Any paint with `opacity < 1` is a
+   decorative overlay — white rail glyphs at 38%, brand waveform bars at 22%,
+   tinted status badges at 12%. Remapping those destroys them. This single rule
+   is what keeps the rail glyphs and every tint badge alive.
+3. **Node opacity is not paint opacity.** `node.opacity = 0.6` is untouched by
+   the pass and carries the muted-text hierarchy across for free.
+
+Two things the colour map cannot infer are handled by node name: `Canvas grid`
+(ink dots at 10% → white at 10%) and the glass panels (light-on-dark
+translucent gradient). Drop shadows get remapped to pure black at roughly
+double alpha.
+
+After the pass, **assert no Day surface token survives in a Night frame**. The
+expected leftovers are `#4F46E5` fills (brand buttons, correct) and `#FFFFFF`
+*text* (labels on brand buttons, correct) — anything else is a miss.
 
 ## Nested pages (rows 4 and 5)
 
