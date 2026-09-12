@@ -15,6 +15,22 @@ Figma file: `RRfHYjJ1gZDmk7uxDzikwO` (Ringfully) · page `0:1`
 | Pricing — Contact Center `106:901` | -2241, 4200 | 1440x1912 |
 | Demo request `106:768` | -721, 4200 | 1440x1753 |
 
+### App screens (row 3, y=6500)
+
+Blank holding frames for Ringfully web-app screenshots, to be placed into the
+product pages later. They intentionally carry **no header or footer** — they are
+product UI, not marketing pages — and have no prototype wiring.
+
+| Frame | Node | x, y | Size |
+|---|---|---|---|
+| App — Login | `116:992` | -3761, 6500 | 1440x900 |
+| App — Dashboard Home | `116:996` | -2241, 6500 | 1440x900 |
+| App — Analytics | `116:1000` | -721, 6500 | 1440x900 |
+| App — Call Management / Architect | `116:1004` | 799, 6500 | 1440x900 |
+
+Each holds one dashed `Placeholder` (1280x400) reading the screen name and
+`Drop screenshot here` — delete it once the screenshot is pasted in.
+
 Business Phone, Contact Center Solution, Platform, Resources and Demo request
 are shells: header instance, page hero (title, subhead, CTA), a dashed content
 placeholder, and footer instance. In every page the **header instance is the
