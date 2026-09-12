@@ -8,20 +8,26 @@ Figma file: `RRfHYjJ1gZDmk7uxDzikwO` (Ringfully) · page `0:1`
 |---|---|---|
 | Landing page `1:1413` | -3761, 0 | 1440x3811 |
 | Business Phone `70:312` | -2241, 0 | 1440x4852 |
-| Platform `70:446` | -721, 0 | 1440x1812 |
-| Resources `70:580` | 799, 0 | 1440x1753 |
-| Pricing `70:714` | 2319, 0 | 1440x1912 |
+| Pricing `70:714` | -721, 0 | 1440x1912 |
 | Contact Center Solution `106:635` | -3761, 5252 | 1440x5098 |
 | Pricing — Contact Center `106:901` | -2241, 5252 | 1440x1912 |
-| Demo request `106:768` | -721, 5252 | 1440x1753 |
+| Demo request `106:768` | -721, 5252 | 1440x2360 |
 | Integrations `151:1126` | 799, 5252 | 1440x3840 |
 | Support `155:1145` | 2319, 5252 | 1440x1824 |
 | App screens row 3 | -3761…5359, 10852 | 1440x900 each |
+| Platform nested pages row 4 | -3761…2319, 12152 | see below |
+| Resources nested pages row 5 | -3761…799, 16712 | see below |
+
+The `Platform` and `Resources` category frames **no longer exist**. They were
+empty shells standing in for nav categories; every entry in those two dropdowns
+now has its own designed page, so the shells were deleted and row 1 closed up.
+The categories are containers in the nav, not destinations.
 
 ### Canvas rows — check for overlap after ANY page height change
 
 Rows are pitched off the **tallest frame in the row**, not a fixed guess:
-row 1 at y=0 (tallest 4852), row 2 at y=5252 (tallest 5098), row 3 at y=10852.
+row 1 at y=0 (tallest 4852), row 2 at y=5252 (tallest 5098), row 3 at y=10852
+(tallest 900), row 4 at y=12152 (tallest 4160), row 5 at y=16712.
 
 **A page that grows silently slides under the next row**, and a blank frame
 then renders on top of real content. This happened: `Contact Center Solution`
@@ -35,21 +41,42 @@ Section-level verification does not catch this. After any height change, assert
 pairwise.
 
 
-### App screens (row 3, y=6500)
+### App screens (row 3, y=10852)
 
-Blank holding frames for Ringfully web-app screenshots, to be placed into the
-product pages later. They intentionally carry **no header or footer** — they are
-product UI, not marketing pages — and have no prototype wiring.
+Real product UI, not screenshot placeholders. They intentionally carry **no
+header or footer** — they are the web app, not marketing pages — and have no
+prototype wiring. Drop them into the product-page carousels as needed.
 
-| Frame | Node | x, y | Size |
+| Frame | Node | x | Contents |
 |---|---|---|---|
-| App — Login | `116:992` | -3761, 6500 | 1440x900 |
-| App — Dashboard Home | `116:996` | -2241, 6500 | 1440x900 |
-| App — Analytics | `116:1000` | -721, 6500 | 1440x900 |
-| App — Call Management / Architect | `116:1004` | 799, 6500 | 1440x900 |
+| App — Login (+3 states) | `116:992` … `166:1188` | -3761…799 | the login flow, below |
+| App — Dashboard Home | `116:996` | 2319 | KPI tiles, live queue, agent status, activity |
+| App — Analytics | `116:1000` | 3839 | filters, line chart, donut, hourly bars, queue table |
+| App — Call Management / Architect | `116:1004` | 5359 | palette, flow canvas, inspector |
 
-Each holds one dashed `Placeholder` (1280x400) reading the screen name and
-`Drop screenshot here` — delete it once the screenshot is pasted in.
+#### Shared app chrome
+
+All three build on the same two pieces, cloned from Dashboard Home:
+
+| Piece | Node | Spec |
+|---|---|---|
+| `App / Rail` | `198:2216` | 64px, `Ink`, logo mark, 6 icon slots, avatar pinned bottom |
+| `App / Top bar` | `198:2233` | 56px white, 1px `Line` rule, title, search, org chip, action button |
+
+To make a new screen: clone both, set the active rail slot to `WHITE @ 14%`
+fill (and its glyph to `WHITE @ 95%`), reset the previously active one, and
+retitle the top bar. Content starts at x=96, y≈88; the usable content width is
+**1312px** (1440 − 64 rail − 2×32 gutter).
+
+#### Chart construction
+
+- **Donut** — one `ELLIPSE` per segment, all the same size and position, each
+  with its own `arcData {startingAngle, endingAngle, innerRadius: 0.62}` and a
+  **fill**. Start at `-PI/2` and accumulate. A `CARD`-filled full-circle arc
+  behind them is the track.
+- **Line series** — one `VECTOR` per series, see the path-normalisation rule
+  below.
+- **Bars** — plain frames. Do not reach for a vector.
 
 ### Business Phone hero (`Hero / Split`, `121:992`)
 
@@ -171,6 +198,12 @@ Figma's path parser accepts **`M` / `L` / `C` / `Q` / `Z` only, all absolute**:
   `toFixed()` makes `k` a string, so `cx + k` concatenates instead of adding
   and produces coordinates like `142.76` — the icon renders as a giant
   scribble across the card rather than erroring
+- **Assigning `vectorPaths` re-normalises the geometry to the node's own
+  bounding box.** Coordinates you wrote in parent space become box-local, so
+  setting `x = 0, y = 0` afterwards parks the drawing in the top-left corner
+  instead of where you meant. This silently misplaced the Agentic hero's
+  connector lines. Fix: compute `minX`/`minY` of the points you generated and
+  set `node.x = targetX + minX`, `node.y = targetY + minY`
 
 ### Integrations page stack (`151:1126`, 1440x3840)
 
@@ -219,10 +252,9 @@ six so the product pages don't read as duplicates.
   **fill**, not a stroke — `innerRadius: 0` with a stroke draws a pie wedge, not
   a ring.
 
-Contact Center Solution, Platform, Resources and Demo request
-are shells: header instance, page hero (title, subhead, CTA), a dashed content
-placeholder, and footer instance. In every page the **header instance is the
-last child** so dropdowns draw above page content.
+No page is a shell any more. In every marketing page the **header instance is
+the last child** so dropdowns draw above page content, and every page ends with
+a `Section / Closing CTA` (cloned from `132:1035`) plus a `Footer` instance.
 
 The two Pricing frames carry the real pricing section (below).
 
@@ -302,9 +334,28 @@ Per variant (7 x 4 = 28):
 | Try free (`Button / Secondary`) | Navigate -> Pricing `70:714` |
 | Request a demo (`Button / Primary`) | Navigate -> Demo request `106:768` |
 
-Dropdown entries (13): the two Product entries go to their own pages —
-`Business Phone` -> `70:312`, `Contact Center Solution` -> `106:635`. Platform
-panel (7) -> Platform `70:446`, Resources panel (4) -> Resources `70:580`.
+Dropdown entries (13) — **every one now lands on its own designed page**, all
+`NAVIGATE` + Dissolve 150ms:
+
+| Panel | Entry | Node | Destination |
+|---|---|---|---|
+| Product | Business Phone | `73:637` | Business Phone `70:312` |
+| Product | Contact Center Solution | `73:640` | Contact Center Solution `106:635` |
+| Platform | Support | `80:636` | Support `155:1145` |
+| Platform | Privacy | `80:639` | Platform — Privacy `182:1383` |
+| Platform | Integration | `80:643` | Integrations `151:1126` |
+| Platform | Developers | `80:646` | Platform — Developers `184:1502` |
+| Platform | API's | `80:650` | Platform — API's `186:1621` |
+| Platform | Overview | `80:653` | Platform — Overview `177:1145` |
+| Platform | AI | `80:657` | Platform — AI `180:1264` |
+| Resources | Documentation | `73:660` | Documentation `188:1740` |
+| Resources | Blog | `73:663` | Blog `190:1859` |
+| Resources | Agentic | `73:667` | Agentic `192:1978` |
+| Resources | InboundCX University | `73:670` | InboundCX University `194:2097` |
+
+The entries live **inside the `Header` component set variants**, so editing one
+propagates to every page's header instance. After any change, verify in a
+separate call and assert that no reaction still targets a deleted frame.
 
 The footer's `Book a demo` (`69:298`) also navigates to Demo request `106:768`.
 
@@ -446,6 +497,53 @@ The footer (`69:336`) is full-bleed `Ink`, 1440x656, in three bands:
    the right (white containers with ink glyphs).
 
 It is a component, instanced on all five page frames.
+
+## Nested pages (rows 4 and 5)
+
+Nine pages, one per nav entry that used to point at a shell. Each was given a
+**deliberately different section stack** — the brief was explicitly "don't make
+the same thing for all the pages" — while staying inside the same tokens, the
+80px gutters and the shared header/CTA/footer.
+
+### Row 4 — Platform (y=12152)
+
+| Page | Node | x | Size | Stack |
+|---|---|---|---|---|
+| Platform — Overview | `177:1145` | -3761 | 1440x4160 | split hero w/ card collage · ink stat band · three-layer diagram · 3 alternating zig-zag rows · logo strip |
+| Platform — AI | `180:1264` | -2241 | 1440x3620 | full-bleed ink hero w/ glow · 3 capability cards · 5-node call timeline · guardrails split w/ dark config panel · quote card |
+| Platform — Privacy | `182:1383` | -721 | 1440x3660 | compact hero w/ 4 compliance badges · two-column long-form + contents rail · 12-region residency grid · subprocessor table |
+| Platform — Developers | `184:1502` | 799 | 1440x3440 | hero w/ terminal panel · ink quickstart strip · 6 SDK cards · 3 build-idea cards · community band |
+| Platform — API's | `186:1621` | 2319 | 1440x3320 | narrow centred hero w/ search · endpoint explorer (method pills + request/response panels) · 6 webhook events · limits + versioning |
+
+### Row 5 — Resources (y=16712)
+
+| Page | Node | x | Size | Stack |
+|---|---|---|---|---|
+| Resources — Documentation | `188:1740` | -3761 | 1440x3120 | search hero w/ suggestion chips · 6 category cards · numbered popular-articles list · browse-by-product row |
+| Resources — Blog | `190:1859` | -2241 | 1440x3180 | slim hero w/ category pills · large featured split card · 3x2 post grid · ink newsletter band |
+| Resources — Agentic | `192:1978` | -721 | 1440x3280 | centred hero over an agent graph · 3-point explainer · **mixed-height** resource cards · oversized stat band |
+| Resources — InboundCX University | `194:2097` | 799 | 1440x3280 | ink hero w/ overlapping enrolment card · 3 path cards w/ progress bars · 6-row course catalogue · certification band |
+
+Recurring pieces, so the set still reads as one site: the CTA is always a clone
+of `132:1035`, the footer always an instance of `69:336`, and the header always
+an instance of `11:2` placed **last**.
+
+## Demo request (`106:768`, 1440x2360)
+
+Rebuilt from a shell into a conversion page — form-first rather than
+hero-first, which is why it does not carry a closing CTA.
+
+| y | Section |
+|---|---|
+| 0 | Navigation (last child) |
+| 164 | `Hero / Demo form` — left value column (4 ticked benefits, quote, logo row), right 560px white form card |
+| 1064 | What happens next — 3 numbered steps |
+| 1444 | Trust band — 4 facts |
+| 1704 | Footer |
+
+The form card carries first/last name, work email, company, phone, a company-size
+select, a two-option product-interest radio, `Book my demo`, legal microcopy and
+a phone fallback.
 
 ## Next
 
