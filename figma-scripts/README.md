@@ -534,6 +534,78 @@ usable width 1152, existing layout fits), maximum unbounded. A smaller minimum
 was rejected: below 1280 the CC rail plus wallboard would need redesigning, and
 a declared number you cannot honour is worse than none.
 
+### Mobile — 390 and 412
+
+Eighteen pages at each width, **36 frames**, built as one responsive layout
+rendered twice rather than two designs.
+
+| | 1440 | Mobile |
+|---|---|---|
+| Width | 1440 | **390** iPhone / **412** Android |
+| Gutter | 80 | **20** |
+| Content | 1280 / 1034 | **350** / **372** |
+| Section padding | 84 | **44** |
+| Header | 164 | **56** |
+| Heading / sub / body / eyebrow | 56 / 22 / 18 / 11 | **28 / 18 / 16 / 11** |
+| Grids | 4-col, 6-col, 3x2 | **1 column** |
+
+#### The pages are composed, not transformed
+
+A geometric transform works at 1920 because nothing reflows. At 390 everything
+does, and eighteen pages have eighteen different section structures. So each
+mobile page is **composed from content extracted out of its 1440 source**:
+
+1. Walk the source section, sorting children by absolute `y` then `x` — reading
+   order, not layer order.
+2. Classify each leaf: a **card** is a filled, rounded frame 170–700 wide that
+   contains text; **media** is anything ≥240×90 with no text; everything else is
+   a text run.
+3. Classify text by its source size and tracking — ≤13 with ≥3% tracking is an
+   eyebrow, ≥30 is the heading, ≥20 a subhead, the rest body.
+4. Re-render into a 390 auto-layout column with the mobile scale.
+
+Every string comes from the source node — **nothing is retyped** — which is what
+makes the copy-parity assertion meaningful. Repeats are de-duplicated per
+section, so a label that appeared in four columns appears once.
+
+#### Auto-layout is what makes 412 nearly free
+
+Pages are `layoutMode='VERTICAL'` with children set to `FILL`, so Android is
+`clone()` + `resize(412, h)`. Two things are required for that to hold:
+
+- **No text node may be `textAutoResize = 'WIDTH_AND_HEIGHT'`.** FILL does
+  nothing to such a node and the page silently fails to reflow. Asserted
+  recursively — currently 3051 text nodes, zero violations.
+- **Media needs a fixup pass.** `setTargetAspectRatio()` **does not exist** in
+  this plugin API version (reading the property throws), so after the clone each
+  `Media` frame's height is multiplied by 372/350 by hand.
+
+The header is appended **last** with `layoutPositioning='ABSOLUTE'` *and*
+`constraints.horizontal='STRETCH'` — without STRETCH it stays 390 wide on a 412
+page, which is subtle enough to ship unnoticed.
+
+#### Gotcha: `resize()` resets `primaryAxisSizingMode`
+
+Setting `primaryAxisSizingMode='AUTO'` and then calling `resize()` silently
+reverts it to `FIXED`, and the frame stops hugging — it sat at its placeholder
+height instead. **Set the sizing mode after the resize, never before.**
+
+#### Mobile kit and wiring
+
+| Component | Node | Size |
+|---|---|---|
+| `M / Header` | `381:3922` | 390x56 — logo + hamburger |
+| `M / Nav drawer` | `381:3966` | 390x884 — 17 destinations |
+| `M / Footer` | `381:4001` | 390x330 — stacked columns |
+
+**16 reactions**, all `NAVIGATE` (frame targets have survived every breakage in
+this file; `CHANGE_TO` has not): the hamburger is wired **once on the header
+master**, so all 18 pages inherit it; 14 drawer rows reach their mobile page;
+close returns to Landing. `101:749` was never opened.
+
+`setReactionsAsync` now requires the **`actions` array**, not the old singular
+`action` field — the singular form throws.
+
 ### Closing CTA is now a component
 
 It had been cloned into **14** pages independently; at three breakpoints that
