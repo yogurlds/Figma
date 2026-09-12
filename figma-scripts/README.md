@@ -16,7 +16,7 @@ Figma file: `RRfHYjJ1gZDmk7uxDzikwO` (Ringfully) · page `0:1`
 | Demo request `106:768` | -721, 5252 | 1440x1753 |
 | Integrations `151:1126` | 799, 5252 | 1440x3840 |
 | Support `155:1145` | 2319, 5252 | 1440x1824 |
-| App screens `116:992`…`116:1004` | -3761…799, 10852 | 1440x900 each |
+| App screens row 3 | -3761…5359, 10852 | 1440x900 each |
 
 ### Canvas rows — check for overlap after ANY page height change
 
@@ -120,6 +120,45 @@ header and compact KB footer instead of the `Header` / `Footer` components.
 Wiring: `Item / Support` (`80:636`) → this page, the KB wordmark → Landing
 `1:1413` (so the prototype isn't a dead end), `CONTACT CUSTOMER CARE` → Demo
 request `106:768`.
+
+### Login portal flow (row 3, y=10852)
+
+Four states wired with **frame navigation, not variants** — each state is a
+whole screen, and frame targets have survived every breakage in this file.
+
+| x | Frame | Node |
+|---|---|---|
+| -3761 | App — Login | `116:992` |
+| -2241 | App — Login / Organization | `162:1183` |
+| -721 | App — Login / Org selected | `166:1145` |
+| 799 | App — Login / Region menu | `166:1188` |
+
+22 On Click reactions:
+
+```
+Login ──More Login Options──> Organization ──Next──> Org selected
+  ^                               |                      |
+  |<──────Back to Login───────────                       |
+  |<────────────Change Organization──────────────────────
+  |
+  └──[change]──> Region menu ──(16 regions or Log In)──> Login
+```
+
+Shared shell on all four: centred wordmark, white card with 44px input rows
+(icon box + field), footer wordmark, copyright, and a bottom bar with
+Terms / Privacy / Help and a Language select.
+
+#### Decorative patterns: use real nodes, not one big vector
+
+The org panel's honeycomb was first built as a single `VECTOR` with ~143
+hexagon subpaths. Its bounding box measured correctly and covered the panel,
+but it **rendered as a sliver and then not at all** — no error, just missing
+geometry. Replaced with 80 `createPolygon()` nodes (`pointCount = 6`), which
+render reliably.
+
+Tiling a pointy-top hexagon: `height = width * 1.1547`, rows step at
+`0.75 * height`, and **odd rows** offset by half a column — offsetting by
+column instead produces a star pattern, not a honeycomb.
 
 ### Vector paths: hard-won rules
 
