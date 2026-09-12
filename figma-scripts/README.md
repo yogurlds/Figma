@@ -1,6 +1,6 @@
-# Ringfully — Figma design notes
+# Inbound CX — Figma design notes
 
-Figma file: `RRfHYjJ1gZDmk7uxDzikwO` (Ringfully) · page `0:1`
+Figma file: `RRfHYjJ1gZDmk7uxDzikwO` (Inbound CX) · page `0:1`
 
 ## Frames on the canvas
 
@@ -461,12 +461,18 @@ move the whole set with `set.x` / `set.y` instead.
 | Header (variant set) | `101:749` | 1440x164 per variant |
 | Footer | `69:336` | 1440x656 |
 | Stage 1-6 carousel cards | `17:204`, `17:222`, `17:235`, `18:204`, `18:221`, `18:234` | 440x171 |
+| Brand / Mark | `323:2765` | 879x529 |
+| Brand / Mark — White | `325:2789` | 879x529 |
+| Brand / Wordmark | `330:2771` | 948x132 |
+| Brand / Logo | `330:2778` | 211x32 |
+| Brand / Logo — Ink | `334:2773` | 211x32 |
+| Brand / Logo — White | `330:2785` | 211x32 |
 
 ## Tokens
 
 | Token | Value | Used for |
 |---|---|---|
-| Brand | `#4F46E5` | Primary buttons, logo mark, active toggle, pill outlines, active tab rule |
+| Brand | `#4F46E5` | Primary buttons, brand mark, active toggle, pill outlines, active tab rule |
 | Ink | `#1E1B4B` | All text, announcement bar |
 | Card | `#F7F5FF` | Feature card fills |
 | Panel | `#F5F4FB` | Carousel card content panels |
@@ -573,7 +579,7 @@ It is a component, instanced on all five page frames.
 ## Hero motion (`300:2770`) — the animated home hero
 
 The home hero's call-flow visual is an auto-playing 6-state variant set, built
-from `ASSET — Ringfully Hero Motion — Stages 1–6` (`286:1979`).
+from `ASSET — Inbound CX Hero Motion — Stages 1–6` (`286:1979`).
 
 **Read that asset's `description` before touching this.** The asset is a flat
 2x3 contact sheet of the six cards — it is *not* the hero composition. Its
@@ -708,9 +714,103 @@ or endorsement slots:
 
 | Where | Text | Why it stays |
 |---|---|---|
-| App — Dashboard Home, `Card / Activity` | "took a call from Halcyon" | sample data inside a product screen, same as the fake phone numbers |
+| The 16 app screens (rows 6 and 7) | Halcyon Logistics, Lumen Retail, Meridian Care | sample CRM records inside a product screen, same as the fake phone numbers — a dialer has to show *some* contact |
 | Platform — AI, `Quote card` | attributed testimonial | still a fabricated endorsement — **remove or replace before this goes near a real audience** |
 | Resources — Blog, post 4 | "Meridian Health answers 3,400 calls a night" | placeholder editorial headline, reads as a fake case study |
+
+## Brand — the rebrand to Inbound CX
+
+The company was renamed from the old brand to **Inbound CX**. Only the name and
+the artwork changed: colour, typography, layout and copy are untouched.
+
+### The artwork is real, not a redraw
+
+Both marks were supplied as SVGs and dropped straight into the file. Everything
+is sourced from the **lockup** (`ASSET — Inbound CX logo (source SVG)`), which
+traces to only 15 vectors and carries a clean mark *and* the real wordmark, so
+nothing had to be re-typeset. The favicon SVG traces to 130 vectors and is kept
+only as the export original.
+
+An earlier hand-drawn reconstruction of the mark took six iterations and was
+then thrown away when the real files arrived. Both of its components are gone.
+Do not resurrect them — the SVG sources are on the canvas.
+
+### The six components
+
+| Component | Node | What it is |
+|---|---|---|
+| `Brand / Mark` | `323:2765` | the mark alone, brand purple |
+| `Brand / Mark — White` | `325:2789` | the same, white — for brand-filled tiles and dark grounds |
+| `Brand / Wordmark` | `330:2771` | "Inbound CX" as one vector, counters knocked through |
+| `Brand / Logo` | `330:2778` | horizontal lockup, all brand purple — the supplied artwork |
+| `Brand / Logo — Ink` | `334:2773` | brand mark + `#1E1B4B` wordmark — the light-ground default |
+| `Brand / Logo — White` | `330:2785` | all white — dark and photographic grounds |
+
+The supplied lockup is **stacked**; every placement in this file is a horizontal
+bar under 46px tall, so the logo component re-arranges the same artwork side by
+side rather than re-drawing it. Mark and wordmark sit at a 14px gap, wordmark
+optically centred against a full-height mark.
+
+The **Ink** variant exists because the old lockup was already two-tone — brand
+spark, ink wordmark. Keeping that split means the rebrand swapped artwork only,
+not the colour treatment of any page.
+
+They live in a column at `-3761, 29500` with the two SVG sources below them.
+
+### Where each one is used
+
+| Placement | Component | Height |
+|---|---|---|
+| `Header` nav bar, 4 variants | Logo — Ink | 26 |
+| Landing page, 4 use-case round marks | Mark — White | 22 in a 72px brand circle |
+| 4 login frames, hero | Logo — White | 46 |
+| 4 login frames, footer | Logo — Ink at 62% opacity | 26 |
+| Support KB hero wordmark | Logo — White | 20, with `KNOWLEDGE BASE` re-flowed after it |
+| Support footer wordmark | Logo — Ink | 15 |
+| `BP / Top bar` tile, 8 screens | Mark — White | 16 wide inside the 26px brand tile |
+| `CC / Rail` tile, 8 screens | Mark — White | 18 wide inside the 28px brand tile; the overlaid `R` letter was deleted |
+
+**Not** replaced: the frames merely *named* `Mark` that are generic icons — four
+compliance badges on Platform — Privacy, six SDK icons on Platform — Developers,
+six course icons on the University page. A `Mark`-named frame is not
+automatically a brand mark; the reliable signal was the old `Spark` STAR.
+
+### Text rename: apply most-specific first
+
+129 text nodes across 57 distinct strings. Running a bare
+`old -> Inbound CX` first would have produced `Inbound CX.com` and
+`INBOUND CX CX | CONTACT CENTER`, so the rules run longest-match first:
+the six domains, then `notice@`, then the package strings
+(`@…/node`, `pip install`, `gem install`, `composer require`, `com.…:sdk`),
+then `…-Version`, then `… CX` (the old product name — it collapses to plain
+`Inbound CX`), then the bare word.
+
+Technical strings deliberately keep the compact spelling: `api.inboundcx.com`,
+`@inboundcx/node`, `github.com/inboundcx`, `com.inboundcx:sdk`. Prose and
+headings take `Inbound CX` with the space.
+
+### Three things this pass got wrong first
+
+**`rescale()` distorted a flattened boolean.** Scaling the wordmark vector
+directly produced 303x6.4 instead of 144x20 — an aspect of 47 against the
+correct 7.2. Fix: make the wordmark its own **component** and scale an
+*instance*. Instance `rescale()` is reliable; scaling a freshly flattened
+boolean is not.
+
+**`getNodeByIdAsync` resolves deleted nodes.** Checking
+`if (!await figma.getNodeByIdAsync(id))` reported the superseded components as
+still present long after they were removed. Test `node.parent === null` — or
+better, walk the page and check membership.
+
+**A `SECTION`'s subtree materialises lazily.** Each full-page walk surfaced
+more nodes inside `Inbound CX / Use-case workflows` that the previous walk had
+not seen, so a single rename pass kept leaving stragglers. Fix: loop the
+rename-then-rescan until a pass finds nothing, then read back once more in a
+separate call.
+
+Also: `figma.subtract` takes the **bottom-most node in z-order** as the base,
+not the first element of the array. `parent.insertChild(0, base)` before
+subtracting, or the result comes out the size of a counter.
 
 ## The two product apps (rows 6 and 7)
 
