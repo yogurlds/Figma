@@ -16,11 +16,36 @@ The original Article, Shop, Product detail page and About frames were deleted.
 The four replacement pages are shells: header instance, page hero (title,
 subhead, Request a Quote), a dashed content placeholder, and footer instance.
 
+## Header variants and navigation
+
+The header is a variant set (`74:749`) with a single `State` property:
+
+| Variant | Node | Dropdown |
+|---|---|---|
+| State=Default | `11:2` | none |
+| State=Product | `74:635` | Business Phone · Contact Center Solution |
+| State=Platform | `74:673` | AI Agents · Support · Sell · Connect |
+| State=Resources | `74:711` | Documentation · Blog · Agentic · InboundCX University |
+
+Nav labels match the four page frames: Product, Platform, Resources, Pricing.
+
+Dropdown panels are 655px wide, radius 20, two-column, absolutely positioned at
+y=152 inside each variant. The variants stay 164px tall and the panel overflows,
+so swapping state never changes layout. Each variant has `clipsContent = false`,
+and **header instances are the last child of their page frame** so the panel
+draws above page content.
+
+Prototype wiring (16 reactions, On Click):
+
+- Product / Platform / Resources -> Change To that variant, Smart Animate 200ms
+- Clicking the already-open item -> Change To Default (closes it)
+- Pricing -> Navigate to the Pricing frame `70:714`, Dissolve 150ms
+
 ## Components
 
 | Component | Node | Size |
 |---|---|---|
-| Navigation / Header | `11:2` | 1440x164 |
+| Navigation / Header (variant set) | `74:749` | 1440x164 per variant |
 | Footer | `69:336` | 1440x656 |
 | Stage 1-6 carousel cards | `17:204`, `17:222`, `17:235`, `18:204`, `18:221`, `18:234` | 440x171 |
 
