@@ -485,11 +485,15 @@ yields 168px between content blocks.
 |---|---|---|
 | 0 | Header (component instance) | `11:3` — master `11:2` |
 | 164 | Hero: toggle, headline, subhead, single CTA | `15:192` |
-| 683 | Hero carousel (stacked call-flow cards) | `23:192`, stage `23:193` |
-| 1043 | How it works: heading, subhead, pill, 3 feature cards | `30:230` |
-| 1618 | Use cases: heading, pill, video stack, 4 tabs | `47:230` |
-| 2675 | Closing CTA: gradient banner card, white pill button | `58:230` |
-| 3155 | Footer (component instance) | `69:337` — master `69:336` |
+| 683 | **Hero motion** (animated instance, 440 tall) | `301:2728` — set `300:2770` |
+| 1123 | How it works: heading, subhead, pill, 3 feature cards | `30:230` |
+| 1698 | Use cases: heading, pill, video stack, 4 tabs | `47:230` |
+| 2755 | Closing CTA: gradient banner card, white pill button | `58:230` |
+| 3235 | Footer (component instance) | `69:337` — master `69:336` |
+
+Frame height is **3891**. The old static `Hero carousel` `23:192` is **hidden,
+not deleted** — it sits behind the new block at y=683 and can be switched back
+on if the motion is ever dropped.
 
 The original template sections below the Use cases section are **hidden, not
 deleted** (`1:1513`, `1:1526`, `1:1527`, `1:1537`, `1:1514`, `1:1515`, `1:1417`,
@@ -565,6 +569,54 @@ The footer (`69:336`) is full-bleed `Ink`, 1440x656, in three bands:
    the right (white containers with ink glyphs).
 
 It is a component, instanced on all five page frames.
+
+## Hero motion (`300:2770`) — the animated home hero
+
+The home hero's call-flow visual is an auto-playing 6-state variant set, built
+from `ASSET — Ringfully Hero Motion — Stages 1–6` (`286:1979`).
+
+**Read that asset's `description` before touching this.** The asset is a flat
+2x3 contact sheet of the six cards — it is *not* the hero composition. Its
+description is the actual spec: current stage in the foreground, two older
+stages behind and to the right, new stages entering from the left over 650ms,
+looping 6→1, and it names its six source components. The hero therefore
+instances **those same sources** (`17:204`, `17:222`, `17:235`, `18:204`,
+`18:221`, `18:234`) rather than nesting the sheet, so editing a stage card
+updates the asset and the hero together.
+
+Set at (9100, 1000), six variants `Stage=1` … `Stage=6`, each 1440x440.
+
+### Slots
+
+Every variant holds **all six** stage instances, named `Stage 1` … `Stage 6`
+identically across variants — Smart Animate matches layers by name, so without
+that there is nothing to tween. Only the slot changes:
+
+| Slot | x | y | scale | opacity |
+|---|---|---|---|---|
+| `IN` — next up, off-frame left | -380 | 135 | 1.00 | 0 |
+| `FRONT` — current | 220 | 135 | 1.00 | 1 |
+| `BACK1` — one older | 520 | 95 | 0.92 | 0.62 |
+| `BACK2` — two older | 760 | 60 | 0.84 | 0.35 |
+| `OUT` — retired | 1180 | 30 | 0.76 | 0 |
+
+For variant *N*: stage *N* is FRONT, *N−1* BACK1, *N−2* BACK2, *N+1* IN, the
+rest OUT. Layer order is painted furthest-back first so the current card lands
+on top.
+
+**Park with opacity 0, never `visible = false`.** On the 6→1 loop a card has to
+travel from OUT on the right back to IN on the left. Both endpoints are at
+opacity 0, so Smart Animate tweens that traverse invisibly. Hiding the node
+instead makes it pop into place.
+
+### Wiring
+
+Six reactions: `AFTER_TIMEOUT` 2.2s → `CHANGE_TO` the next variant,
+`SMART_ANIMATE` 650ms (the duration the asset specifies), `Stage=6` → `Stage=1`.
+
+Same dissolution risk as every other set in this file — the name is
+`Hero motion` with **no slash**, and dragging a variant out of the purple
+container strips all six reactions silently. Verify in a separate call.
 
 ## Article template (row 8, y=22992)
 
@@ -837,8 +889,9 @@ a phone fallback.
 
 ## Next
 
-The carousel rotation animation is not built yet. Advancing it means promoting
-each card up one slot (Active -> Peek (previous) -> Peek (earlier) -> out) and
-bringing the next queued stage in at Active, driven by Smart Animate on an
-After Delay trigger. The tab switching in the Use cases section works the same
-way — swap which video slot is visible alongside the active tab styling.
+The Use cases tab switching is still static — swapping which of the four video
+slots is visible alongside the active tab styling would work the same way the
+`Hero motion` set does: variants plus Smart Animate.
+
+The product-page carousel split is also still open (see the Screens carousel
+note above).
