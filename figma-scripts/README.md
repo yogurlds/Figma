@@ -536,7 +536,7 @@ hero-first, which is why it does not carry a closing CTA.
 | y | Section |
 |---|---|
 | 0 | Navigation (last child) |
-| 164 | `Hero / Demo form` — left value column (4 ticked benefits, quote, logo row), right 560px white form card |
+| 164 | `Hero / Demo form` — left value column (4 ticked benefits, logo row), right 560px white form card |
 | 1064 | What happens next — 3 numbered steps |
 | 1444 | Trust band — 4 facts |
 | 1704 | Footer |
