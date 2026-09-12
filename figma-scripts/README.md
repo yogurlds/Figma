@@ -15,6 +15,7 @@ Figma file: `RRfHYjJ1gZDmk7uxDzikwO` (Ringfully) · page `0:1`
 | Pricing — Contact Center `106:901` | -2241, 5252 | 1440x1912 |
 | Demo request `106:768` | -721, 5252 | 1440x1753 |
 | Integrations `151:1126` | 799, 5252 | 1440x3840 |
+| Support `155:1145` | 2319, 5252 | 1440x1824 |
 | App screens `116:992`…`116:1004` | -3761…799, 10852 | 1440x900 each |
 
 ### Canvas rows — check for overlap after ANY page height change
@@ -102,6 +103,35 @@ the purple dashed container, all 12 `CHANGE_TO` reactions are silently stripped.
 Recovery is the procedure documented above for the header.
 
 Cards are dashed placeholders named after the four `App — *` frames.
+
+### Support page (`155:1145`) — knowledge base
+
+Deliberately **not** on the shared shell: it uses the template's own purple KB
+header and compact KB footer instead of the `Header` / `Footer` components.
+
+| y | Section |
+|---|---|
+| 0 | Purple hero — KB header row, `How can we help?`, search rule, ring graphic |
+| 441 | What's new card — 5 release-note rows |
+| 789 | 12 category cards, 4 columns x 3 rows |
+| 1537 | 4 brand quick-link buttons |
+| — | Legal paragraph, divider, KB footer |
+
+Wiring: `Item / Support` (`80:636`) → this page, the KB wordmark → Landing
+`1:1413` (so the prototype isn't a dead end), `CONTACT CUSTOMER CARE` → Demo
+request `106:768`.
+
+### Vector paths: hard-won rules
+
+Figma's path parser accepts **`M` / `L` / `C` / `Q` / `Z` only, all absolute**:
+
+- Relative commands throw `Failed to convert path. Invalid command at m`
+- **Arcs throw too** — `Invalid command at A`. Draw circles as four cubic
+  segments with control offset `r * 0.5523`
+- When generating a path in a loop, keep every coordinate **numeric**. Using
+  `toFixed()` makes `k` a string, so `cx + k` concatenates instead of adding
+  and produces coordinates like `142.76` — the icon renders as a giant
+  scribble across the card rather than erroring
 
 ### Integrations page stack (`151:1126`, 1440x3840)
 
