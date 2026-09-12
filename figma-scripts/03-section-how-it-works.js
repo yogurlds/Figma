@@ -2,6 +2,7 @@
 // Structure: centred heading -> subhead -> outlined pill button -> 3 equal lavender cards
 // Target: Figma file RRfHYjJ1gZDmk7uxDzikwO, Landing page frame 1:1413, y = 1371
 // Replaces template nodes 1:1496 (Section heading) and 1:1497 (3-card row).
+// Applied — section built as node 30:230 (1440x575).
 // Run via the Figma MCP `use_figma` tool.
 
 const INK   = { r: 0x1E/255, g: 0x1B/255, b: 0x4B/255 };

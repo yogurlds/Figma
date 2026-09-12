@@ -23,7 +23,7 @@ Typeface: **Hanken Grotesk** (Regular, Medium, SemiBold, Bold).
 | 0 | Header (component instance) | `11:3` — master `11:2` |
 | 164 | Hero: toggle, headline, subhead, CTAs | `15:192` |
 | 683 | Hero carousel (stacked call-flow cards) | `23:192`, stage `23:193` |
-| 1371 | How it works (pending — see script) | not yet built |
+| 1371 | How it works: heading, subhead, pill button, 3 feature cards | `30:230` |
 
 ## Carousel stage cards (components)
 
@@ -36,12 +36,31 @@ Typeface: **Hanken Grotesk** (Regular, Medium, SemiBold, Bold).
 | 05 Agent receives the call with context | `18:221` |
 | 06 Transcript / summary generated | `18:234` |
 
-All normalised to 440x171. Slots 1-3 are visible in the stack (100% / 90% scale
-at 70% opacity / 81% scale at 40% opacity); slots 4-6 are parked hidden behind
-slot 1 as the upcoming rotation states.
+All normalised to 440x171.
 
-## Pending
+The stack reads top-to-bottom as the call progresses: earlier stages recede
+upward showing only their header row, the active stage sits full-size at the
+front. Layer order is furthest-back first so the active card lands on top.
 
-`03-section-how-it-works.js` is written but **not yet applied** — the Figma MCP
-Starter-plan tool-call limit was reached before it could run. Re-run it via the
-`use_figma` tool once the limit resets.
+| Slot | Stage | Scale | y | Content opacity |
+|---|---|---|---|---|
+| Peek (earlier) | 1 | 0.85 | 0 | 0.40 |
+| Peek (previous) | 2 | 0.92 | 52 | 0.65 |
+| Active | 3 | 1.00 | 108 | 1.00 |
+
+Stages 4-6 are parked hidden at the active position as the upcoming rotation
+states. Peek cards keep frame opacity at 1 and fade their `Header` / `Content`
+children instead — a translucent frame lets the card behind bleed through.
+
+## Next
+
+The rotation animation is not built yet. The slot structure above is the
+starting state; advancing it means promoting each card up one slot (Active ->
+Peek (previous) -> Peek (earlier) -> out) and bringing the next queued stage in
+at Active, driven by Smart Animate on an After Delay trigger.
+
+## Known gap
+
+~250px of whitespace sits between the How it works section (ends y=1946) and the
+next template section (starts y=2198), slightly wider than the other section
+gaps. Tightening it means shifting the remaining template sections up.
