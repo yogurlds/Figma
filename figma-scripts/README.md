@@ -6,7 +6,7 @@ Figma file: `RRfHYjJ1gZDmk7uxDzikwO` (Inbound CX) · page `0:1`
 
 | Frame | x, y | Size |
 |---|---|---|
-| Landing page `1:1413` | -3761, 0 | 1440x3811 |
+| Landing page `1:1413` | -3761, 0 | 1440x3891 |
 | Business Phone `70:312` | -2241, 0 | 1440x4852 |
 | Pricing `70:714` | -721, 0 | 1440x1912 |
 | Contact Center Solution `106:635` | -3761, 5252 | 1440x5098 |
@@ -453,6 +453,92 @@ target frames. Recovery, as one scripted pass:
 
 Never set `layoutMode`, `resize()` or reposition individual variants on the set;
 move the whole set with `set.x` / `set.y` instead.
+
+## Responsive breakpoints
+
+The file now carries three widths across four Figma pages.
+
+| Page | Contents |
+|---|---|
+| `01 · Source — Desktop 1440` | the original 18 marketing pages, 4 login states, 16 app screens, article system, all components |
+| `02 · Desktop — 1920` | 18 letterbox pages |
+| `03 · Desktop app` | `App Window` set, 16 wrapped screens, sizing spec |
+| `04 · Mobile — 390 / 412` | mobile kit and 18 page pairs |
+
+### 1920 — letterbox, and why not a shift script
+
+1920 − 1440 = 480, so centring the original 1440 content canvas means moving
+everything in by **240** and stretching only the full-bleed backgrounds. The
+result is a max-width column centred in a full-bleed band — the standard
+responsive pattern, and the literal reading of "identical to the big screen".
+
+**Constraints alone do not do this reliably, and neither does a naive shift.**
+Three things were learned the hard way:
+
+1. A recursive `x += 240` rule needs the **original** parent width. Once the
+   parent has been resized, every full-bleed child fails the width test and gets
+   shifted instead of stretched.
+2. The file has four cases, not two. A **left-anchored partial** (the Business
+   Phone hero's copy panel at x=0, w=720) is neither bleed nor centred content;
+   shifting it leaves a white strip against the edge of a full-bleed hero.
+3. **Six containers are auto-layout, not one.** `Hero`, `Section / How it works`,
+   `Section / Use cases`, `Section / Closing CTA`, `Navigation` and `Footer` all
+   have `layoutMode = 'VERTICAL'`. Setting `x` on an auto-layout child is
+   **silently ignored** — position comes from padding. This is why early attempts
+   produced siblings with identical constraints and different geometry.
+
+The transform that works, per node, comparing the clone against its 1440 source:
+
+```
+letterbox(clone, src, oldParentW, newParentW):
+  delta = (newParentW - oldParentW) / 2
+  if clone is auto-layout:
+      paddingLeft  = src.paddingLeft  + delta      # children reflow themselves
+      paddingRight = src.paddingRight + delta
+      handle layoutPositioning === 'ABSOLUTE' children explicitly
+      return
+  for each (child, srcChild) paired BY NAME:
+      if srcChild is bleed → resize to newParentW, x = 0, recurse
+      else                 → x = srcChild.x + delta, restore srcChild's width
+```
+
+**Pair by name, never by index.** `detachInstance()` reorders children, so an
+index-paired walk silently compares the wrong nodes and reports success.
+
+Radial glows are excluded by name (`glow|blob|sweep|wash|ring|tail|halo`) — a
+stretched `GRADIENT_RADIAL` becomes an ellipse.
+
+The 1920 set is **deliberately static**: top-level instances are detached and
+every inherited reaction stripped, because `clone()` copies reactions *including
+their destinations* and the nav would otherwise navigate back to the 1440 pages.
+Do not "fix" this by re-adding wiring.
+
+### Desktop application shell
+
+`App Window` (`378:3927`), a slash-free variant set with `OS = macOS | Windows`
+and a `Title` **text component property** bound to each variant's title node.
+
+| | macOS | Windows 11 |
+|---|---|---|
+| Bar | 28px | 32px |
+| Controls | 12px traffic lights from x=20, 8px gaps | 46×32 caption buttons, right |
+| Title | centred, 12 SemiBold @62% | left at x=16, 12 Medium @72% |
+| Window | 1440×928 | 1440×932 |
+
+The 16 app screens were **converted to components in place** and each window
+holds exactly two instances — a screen and a chrome. No screen content is
+duplicated, and the bare screens still exist on page 01.
+
+Sizing: default **1440×900** content, minimum **1280×800** (Contact Center
+usable width 1152, existing layout fits), maximum unbounded. A smaller minimum
+was rejected: below 1280 the CC rail plus wallboard would need redesigning, and
+a declared number you cannot honour is worse than none.
+
+### Closing CTA is now a component
+
+It had been cloned into **14** pages independently; at three breakpoints that
+would have become 42 copies. Now `Marketing / Closing CTA` (`355:3794`) with 14
+instances. It carried no reactions, which made the swap safe.
 
 ## Components
 
