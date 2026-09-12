@@ -19,7 +19,7 @@ Content width for section bodies: **1034px**, centred.
 Sections carry 84px internal padding top and bottom, so butting them together
 yields 168px between content blocks.
 
-## Landing page (`1:1413`, 1440x5288) vertical stack
+## Landing page (`1:1413`, 1440x3663) vertical stack
 
 | y | Section | Node |
 |---|---|---|
@@ -28,8 +28,13 @@ yields 168px between content blocks.
 | 683 | Hero carousel (stacked call-flow cards) | `23:192`, stage `23:193` |
 | 1043 | How it works: heading, subhead, pill, 3 feature cards | `30:230` |
 | 1618 | Use cases: heading, pill, video stack, 4 tabs | `47:230` |
-| 2675+ | Original template sections | unchanged |
-| 5024 | Footer | `1:1448` |
+| 2675 | Closing CTA: gradient banner card, white pill button | `58:230` |
+| 3155 | Footer: 5 link columns, divider, bottom bar | `59:230` |
+
+The original template sections below the Use cases section are **hidden, not
+deleted** (`1:1513`, `1:1526`, `1:1527`, `1:1537`, `1:1514`, `1:1515`, `1:1417`,
+`1:1418`, `1:1542`, and the old footer `1:1448`). Toggle them back on in the
+layers panel if any are still wanted.
 
 **All children are pinned to `MIN` vertical constraints.** The footer originally
 had `MAX`, so growing the frame dragged it down by the same amount. If you
@@ -82,6 +87,19 @@ and delete the `Placeholder` child.
 Tab columns are 239px wide with 26px gutters. The active tab has a 2px brand
 top rule and full-opacity text; inactive tabs have a 1px `Line` rule and text
 at 0.38 / 0.35 opacity.
+
+## Closing CTA (`58:230`) and Footer (`59:230`)
+
+The CTA card is 1280x300, radius 24, filled with a three-stop diagonal gradient
+(`#1E145A -> #33249E -> #4F46E5`). The light sweep is a white ellipse at 16%
+opacity with a 90px layer blur, clipped by the card.
+
+The footer is full-bleed `Ink` with five 224px columns at 40px gutters. Columns
+4 and 5 carry a second heading group (SUPPORT, LEGAL). Link text is white at
+72% opacity; headings are 13px Bold with +4% tracking.
+
+Only the Landing page has the new footer. The Shop, Article, Product detail and
+About frames still use the original template footer.
 
 ## Next
 
